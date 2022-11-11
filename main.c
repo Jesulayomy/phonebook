@@ -5,8 +5,9 @@
 #include <math.h>
 #include <unistd.h>
 
-void add_entry();
-void _exist();
+void add_entry(void);
+void _exist(void);
+void _countl(void);
 
 /**
  * main - stores data in a container
@@ -15,22 +16,40 @@ void _exist();
  *
  * Return: 0 at successful exit
  */
-int main()
+int main(void)
 {
-	
+	char m;
+
 	printf("Enter an operation no to select\n");
 	printf("1. Add new entry\n"
 		"2. Delete Entry\n"
 		"#. Modify entry\n"
 		"3. View all entries\n");
 
+	scanf("%c", &m);
+
+	switch (m)
+	{
+	case '1':
 	_exist();
 	add_entry();
+	break;
+	case '2':
+	printf("Not ready foo\n");
+	/* delete a line from the file */
+	case '3':
+	/* open the file and display its contents */
+	break;
+	default:
+	printf("Wrong selection\n");
+	}
+
+	_countl();
 
 	return (0);
 }
 
-void add_entry()
+void add_entry(void)
 {
 	FILE *fptr;
 	char *name, *phone;
@@ -64,22 +83,41 @@ void add_entry()
 	return;
 }
 
-void _exist()
+void _exist(void)
 {
-	FILE *new;
+FILE *nw;
 
-	new = fopen("./phonebook.txt", "r");
-	if (new == NULL)
-	{
-		new = fopen("./phonebook.txt", "w");
-		fprintf(new, "Firstname \t|\t  Lastname\t|\tPhone Number\n");
-		fprintf(new, "________________|_______________________|___________________\n");
-		fclose(new);
-		return;
-	}
-
-	fclose(new);
+nw = fopen("./phonebook.txt", "r");
+if (nw == NULL)
+{
+	nw = fopen("./phonebook.txt", "w");
+	printf("Creating file in current directory ...\n\n");
+	fprintf(nw, "Firstname \t|\t  Lastname\t|\tPhone Number\n");
+	fprintf(nw, "________________|_______________________|___________________\n");
+	fclose(nw);
 	return;
 }
+
+printf("Opening the existing file to modify\n\n");
+fclose(nw);
+return;
+}
+
+void _countl(void)
+{
+	FILE *lc;
+	int line = 0;
+	char c;
+
+	lc = fopen("./phonebook.txt", "r");
+
+	while ((c = fgetc(lc) ) != 10)
+		line++;
+
+	printf("%d lines\n", line);
+}
+
+
+
 
 
