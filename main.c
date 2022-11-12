@@ -7,7 +7,9 @@
 
 void add_entry(void);
 void _exist(void);
-void _countl(void);
+void _view(void);
+void _delete(int);
+void _modify(int);
 
 /**
  * main - stores data in a container
@@ -19,12 +21,13 @@ void _countl(void);
 int main(void)
 {
 	char m;
+	int rm;
 
 	printf("Enter an operation no to select\n");
 	printf("1. Add new entry\n"
 		"2. Delete Entry\n"
-		"#. Modify entry\n"
-		"3. View all entries\n");
+		"3. Modify entry\n"
+		"4. View all entries\n");
 
 	scanf("%c", &m);
 
@@ -35,18 +38,40 @@ int main(void)
 	add_entry();
 	break;
 	case '2':
-	printf("Not ready foo\n");
-	/* delete a line from the file */
+	_view();
+	printf("Enter a line to remove\n");
+	scanf("%d", &rm);
+	_delete(rm);
+	_view();
+	break;
 	case '3':
+	printf("Enter a line to edit\n");
+	scanf("%d", &rm);
+	_modify(rm);
+	/* delete a line from the file */
+	case '4':
+	_view();
 	/* open the file and display its contents */
 	break;
 	default:
 	printf("Wrong selection\n");
 	}
 
-	_countl();
-
 	return (0);
+}
+
+void _view(void)
+{
+	FILE *open;
+	char view;
+
+	open = fopen("./phonebook.txt", "r");
+
+	printf("\n\n\t\t_______Phone-book________\n");
+	while ((view = fgetc(open)) != EOF)
+		putchar (view);
+
+	fclose(open);
 }
 
 void add_entry(void)
@@ -79,8 +104,6 @@ void add_entry(void)
 	scanf("%s", phone);
 	fprintf(fptr, "|\t%s\n", phone);
 	fclose(fptr);
-
-	return;
 }
 
 void _exist(void)
@@ -103,21 +126,104 @@ fclose(nw);
 return;
 }
 
-void _countl(void)
+void _delete(int n)
 {
-	FILE *lc;
-	int line = 0;
+	FILE *src, *temp;
 	char c;
+	int l = 1;
 
-	lc = fopen("./phonebook.txt", "r");
+	/* accounting for table header */
+	n += 2;
 
-	while ((c = fgetc(lc) ) != 10)
-		line++;
+	/* open both files */
+	src = fopen("./phonebook.txt", "r");
+	if (src == NULL)
+		return;
+	temp = fopen("./temp.txt", "w");
 
-	printf("%d lines\n", line);
+	/* create a copy from src to temp.txt */
+	for (;(c = fgetc(src)) != EOF;)
+	{
+		fprintf(temp, "%c", c);
+	}
+
+	fclose(src);
+	fclose(temp);
+
+	src = fopen ("./phonebook.txt", "w");
+	temp = fopen ("./temp.txt", "r");
+
+	/* write n lines, and skip n+1th line, write the remaining lines */
+	for (;(c = fgetc(temp)) != EOF;)
+	{
+		if (n != l)
+			fprintf(src, "%c", c);
+
+		if (c == '\n')
+			l++;
+	}
+
+	fclose(src);
+	fclose(temp);
+
+	remove("temp.txt");
+
 }
 
 
+/* change a line and reenter stuff */
+void _modify(int n)
+{
+	FILE *src, *temp;
+	char c;
+	char *fname, *sname, *nphone;
+	int l = 1;
 
+	/* accounting for table header */
+	n += 2;
 
+	fname = malloc(sizeof(char) * 11);
+	sname = malloc(sizeof(char) * 11);
+	nphone = malloc(sizeof(char) * 15);
 
+	printf("Enter your surname\n");
+	scanf("%s", fname);
+	printf("Enter your firstname\n");
+	scanf("%s", sname);
+	printf("Enter your phone number, beginning with country code\n");
+	scanf("%s", nphone);
+
+	/* open both files */
+	src = fopen("./phonebook.txt", "r");
+	if (src == NULL)
+		return;
+	temp = fopen("./temp.txt", "w");
+
+	/* create a copy from src to temp.txt */
+	for (;(c = fgetc(src)) != EOF;)
+	{
+		fprintf(temp, "%c", c);
+	}
+
+	fclose(src);
+	fclose(temp);
+
+	src = fopen ("./phonebook.txt", "w");
+	temp = fopen ("./temp.txt", "r");
+
+	/* write n lines, and skip n+1th line, write the remaining lines */
+	for (;(c = fgetc(temp)) != EOF;)
+	{
+	if (n != l)
+		fprintf(src, "%c", c);
+	if (c == '\n' && n == l)
+		fprintf(src, "%10s\t|\t%10s\t|\t%s\n", fname, sname, nphone);
+	if (c == '\n')
+		l++;
+	}
+
+	fclose(src);
+	fclose(temp);
+
+	remove("temp.txt");
+}
