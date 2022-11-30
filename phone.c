@@ -36,16 +36,18 @@ int main(void)
 	case '1':
 	_exist();
 	add_entry();
+	_view();
 	break;
 	case '2':
 	_view();
-	printf("Enter a line to remove\n");
+	printf("Enter an entry/line number to remove\n");
 	scanf("%d", &rm);
 	_delete(rm);
 	_view();
 	break;
 	case '3':
-	printf("Enter a line to edit\n");
+	_view();
+	printf("Enter an entry/line number to edit\n");
 	scanf("%d", &rm);
 	_modify(rm);
 	/* delete a line from the file */
@@ -54,7 +56,8 @@ int main(void)
 	/* open the file and display its contents */
 	break;
 	default:
-	printf("Wrong selection\n");
+	printf("Wrong seletion\nExiting...\n");
+	system("sleep 1");
 	}
 
 	return (0);
@@ -115,6 +118,7 @@ if (nw == NULL)
 {
 	nw = fopen("./phonebook.txt", "w");
 	printf("Creating file in current directory ...\n\n");
+	system("sleep 1");
 	fprintf(nw, "Firstname \t|\t  Lastname\t|\tPhone Number\n");
 	fprintf(nw, "________________|_______________________|___________________\n");
 	fclose(nw);
@@ -122,6 +126,7 @@ if (nw == NULL)
 }
 
 printf("Opening the existing file to modify\n\n");
+system("sleep 1");
 fclose(nw);
 return;
 }
@@ -132,6 +137,12 @@ void _delete(int n)
 	char c;
 	int l = 1;
 
+	/* Making exception for top lines */
+	if (n < 1)
+	{
+		printf("Unable to delete line %d", n);
+		return;
+	}
 	/* accounting for table header */
 	n += 2;
 
@@ -162,12 +173,13 @@ void _delete(int n)
 		if (c == '\n')
 			l++;
 	}
+	printf("Deleting Entry %d...\n", n - 2);
+	system("sleep 1");
 
 	fclose(src);
 	fclose(temp);
 
 	remove("temp.txt");
-
 }
 
 

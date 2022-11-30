@@ -1,5 +1,3 @@
 #!/bin/bash
 
-gcc -Wall -pedantic -Werror -Wextra -std=gnu89 main.c -o book
-
-clear
+gcc -Wall -pedantic -Werror -Wextra -std=gnu89 phone.c -o book
