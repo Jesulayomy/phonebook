@@ -11,7 +11,7 @@ If an error occurs or your architecture is not supported, please compile with:
 ```commandline
 $- gcc phone.c -o book
 ```
--> Other compilers like clang, llvm, or make should work as well
+- Other compilers like clang, llvm, or make should work as well
 
 #### Running
 Run the book executeable generated from compilation
